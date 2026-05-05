@@ -21,7 +21,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await api.get(`/api/history/${symbol}`, {
+        const res = await api.get(`history/${symbol}`, {
           params: { period: "5d", interval: "1h" }
         });
         setPriceHistory(res.data.data || []);
@@ -36,7 +36,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTrades = async () => {
       try {
-        const res = await api.get("/api/trades");
+        const res = await api.get("trades");
         setTrades(res.data);
       } catch (err) {
         console.error("Failed to fetch trades:", err);
@@ -48,7 +48,7 @@ export default function Dashboard() {
   // WebSocket connection
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/api/ws/${symbol}`;
+    const wsUrl = `${protocol}//localhost:8000/api/ws/${symbol}`;
 
     setLoading(true);
     setError(null);
@@ -103,17 +103,21 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-transparent p-4 md:p-12">
+      <div className="max-w-[1400px] mx-auto space-y-12">
+        {/* Cinematic Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-[0.5px] border-monroe-gold-muted/20 pb-8">
           <div>
-            <h1 className="text-4xl font-bold text-slate-100">Monroe v2</h1>
-            <p className="text-slate-400">Algorithmic Trading System</p>
+            <h1 className="text-display text-5xl text-monroe-gold-primary drop-shadow-lg">
+              MONROE <span className="font-light text-monroe-accent-burgundy text-4xl">v2</span>
+            </h1>
+            <p className="text-ui-label text-monroe-text-secondary mt-3">Algorithmic Trading System</p>
           </div>
-          <div className="text-right">
-            <p className="text-slate-400 text-sm">US Equities</p>
-            <p className="text-slate-300 font-mono">{new Date().toLocaleString()}</p>
+          <div className="text-left md:text-right mt-6 md:mt-0">
+            <p className="text-ui-label text-monroe-gold-muted mb-2 font-bold tracking-widest">US Equities / Market Hub</p>
+            <p className="text-value text-sm bg-monroe-surface px-4 py-1.5 border border-monroe-gold-primary/10">
+              {new Date().toLocaleString()}
+            </p>
           </div>
         </div>
 
@@ -122,16 +126,16 @@ export default function Dashboard() {
 
         {/* Symbol Selector */}
         <div className="card">
-          <p className="text-slate-400 text-sm mb-3">Trading Symbol</p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-ui-label text-monroe-gold-muted font-bold mb-5">Select Active Asset</p>
+          <div className="flex flex-wrap gap-4">
             {SYMBOLS.map((sym) => (
               <button
                 key={sym}
                 onClick={() => handleSymbolChange(sym)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`px-8 py-2.5 font-bold tracking-widest transition-all duration-300 uppercase text-xs ${
                   symbol === sym
-                    ? "bg-emerald-600 text-white scale-105"
-                    : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                    ? "bg-monroe-gold-mid text-monroe-base shadow-lg scale-105"
+                    : "bg-monroe-raised text-monroe-text-secondary hover:text-monroe-gold-primary hover:bg-monroe-surface border border-monroe-gold-primary/5 hover:border-monroe-gold-primary/20"
                 }`}
               >
                 {sym}
@@ -146,17 +150,19 @@ export default function Dashboard() {
           <div className="lg:col-span-1">
             {loading ? (
               <div className="card animate-pulse">
-                <div className="h-8 bg-slate-700 rounded mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-6 bg-slate-700 rounded"></div>
-                  <div className="h-6 bg-slate-700 rounded"></div>
-                  <div className="h-6 bg-slate-700 rounded"></div>
+                <div className="h-8 bg-monroe-raised rounded mb-8 w-1/2"></div>
+                <div className="space-y-6">
+                  <div className="h-24 bg-monroe-raised"></div>
+                  <div className="h-24 bg-monroe-raised"></div>
+                  <div className="h-24 bg-monroe-raised"></div>
                 </div>
               </div>
             ) : data ? (
               <SignalCard signal={data} price={data.price} timestamp={data.timestamp} />
             ) : (
-              <div className="card text-slate-400">Loading signal data...</div>
+              <div className="card text-monroe-text-secondary/50 flex flex-col items-center justify-center h-full min-h-[400px] border-dashed">
+                <p className="text-ui-label">Awaiting Film Noir Signal...</p>
+              </div>
             )}
           </div>
 
@@ -170,24 +176,27 @@ export default function Dashboard() {
         <TradeHistory trades={trades} />
 
         {/* Stats Footer */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="card text-center">
-            <p className="text-slate-400 text-sm">Current Price</p>
-            <p className="text-2xl font-bold text-emerald-400">${data?.price?.toFixed(2) || "—"}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mt-12">
+          <div className="card relative group">
+            <p className="text-ui-label text-monroe-text-secondary mb-2">Price Value</p>
+            <p className="text-value text-4xl">${data?.price?.toFixed(2) || "—"}</p>
           </div>
-          <div className="card text-center">
-            <p className="text-slate-400 text-sm">24h High</p>
-            <p className="text-2xl font-bold text-slate-300">${data?.high?.toFixed(2) || "—"}</p>
+          <div className="card relative group">
+            <p className="text-ui-label text-monroe-text-secondary mb-2">Peak (24h)</p>
+            <p className="text-value text-3xl opacity-80">${data?.high?.toFixed(2) || "—"}</p>
           </div>
-          <div className="card text-center">
-            <p className="text-slate-400 text-sm">24h Low</p>
-            <p className="text-2xl font-bold text-slate-300">${data?.low?.toFixed(2) || "—"}</p>
+          <div className="card relative group">
+            <p className="text-ui-label text-monroe-text-secondary mb-2">Floor (24h)</p>
+            <p className="text-value text-3xl opacity-80">${data?.low?.toFixed(2) || "—"}</p>
           </div>
-          <div className="card text-center">
-            <p className="text-slate-400 text-sm">Status</p>
-            <p className={`text-2xl font-bold ${connected ? "text-emerald-400" : "text-red-400"}`}>
-              {connected ? "Live" : "Offline"}
-            </p>
+          <div className="card flex flex-col justify-center items-center bg-monroe-raised border-t-2 border-t-monroe-gold-mid">
+            <p className="text-ui-label text-monroe-gold-muted mb-3 font-bold">Protocol Status</p>
+            <div className="flex items-center gap-4">
+              <span className={`relative inline-flex h-3 w-3 ${connected ? 'bg-monroe-gold-primary shadow-[0_0_10px_#D6B56D]' : 'bg-monroe-accent-burgundy shadow-[0_0_10px_#5C1F27]'}`}></span>
+              <p className={`text-ui-label text-lg font-bold ${connected ? "text-monroe-gold-primary" : "text-monroe-accent-burgundy"}`}>
+                {connected ? "Active" : "Halted"}
+              </p>
+            </div>
           </div>
         </div>
       </div>

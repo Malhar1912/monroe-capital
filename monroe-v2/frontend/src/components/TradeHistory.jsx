@@ -1,50 +1,52 @@
 export default function TradeHistory({ trades }) {
   if (!trades || trades.length === 0) {
     return (
-      <div className="card">
-        <h2 className="text-xl font-bold text-slate-100 mb-4">Trade History</h2>
-        <p className="text-slate-400">No trades yet</p>
+      <div className="card border-dashed">
+        <h2 className="text-display text-xl text-monroe-gold-primary mb-4">Trade Ledger</h2>
+        <p className="text-ui-label text-monroe-text-secondary opacity-50">Awaiting Records...</p>
       </div>
     );
   }
 
   return (
-    <div className="card space-y-4">
-      <h2 className="text-xl font-bold text-slate-100">Recent Trades</h2>
+    <div className="card space-y-8">
+      <div className="flex items-center justify-between border-b border-monroe-gold-muted/10 pb-5">
+        <h2 className="text-display text-xl text-monroe-gold-primary">Trade Ledger</h2>
+      </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-slate-700">
-              <th className="text-left py-2 px-2 text-slate-400">Symbol</th>
-              <th className="text-left py-2 px-2 text-slate-400">Side</th>
-              <th className="text-right py-2 px-2 text-slate-400">Qty</th>
-              <th className="text-right py-2 px-2 text-slate-400">Entry</th>
-              <th className="text-right py-2 px-2 text-slate-400">Exit</th>
-              <th className="text-right py-2 px-2 text-slate-400">PnL</th>
-              <th className="text-left py-2 px-2 text-slate-400">Status</th>
+            <tr className="border-b border-monroe-gold-muted/20">
+              <th className="py-4 px-4 text-ui-label text-monroe-gold-muted">Asset</th>
+              <th className="py-4 px-4 text-ui-label text-monroe-gold-muted">Side</th>
+              <th className="text-right py-4 px-4 text-ui-label text-monroe-gold-muted">Volume</th>
+              <th className="text-right py-4 px-4 text-ui-label text-monroe-gold-muted">Entry</th>
+              <th className="text-right py-4 px-4 text-ui-label text-monroe-gold-muted">Exit</th>
+              <th className="text-right py-4 px-4 text-ui-label text-monroe-gold-muted">Result (PnL)</th>
+              <th className="text-center py-4 px-4 text-ui-label text-monroe-gold-muted">State</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-transparent">
             {trades.map((trade, idx) => (
-              <tr key={idx} className="border-b border-slate-800 hover:bg-slate-700 transition-colors">
-                <td className="py-2 px-2 font-semibold">{trade.symbol}</td>
-                <td className="py-2 px-2 capitalize">
-                  <span className={trade.side === "buy" ? "text-emerald-400" : "text-red-400"}>
+              <tr key={idx} className="hover:bg-monroe-raised/50 transition-colors group">
+                <td className="py-5 px-4 text-display text-sm text-monroe-text-primary">{trade.symbol}</td>
+                <td className="py-5 px-4 capitalize">
+                  <span className={`text-ui-label font-bold ${trade.side === "buy" ? "text-monroe-gold-primary" : "text-monroe-accent-burgundy"}`}>
                     {trade.side}
                   </span>
                 </td>
-                <td className="py-2 px-2 text-right">{trade.qty}</td>
-                <td className="py-2 px-2 text-right">${trade.entry_price?.toFixed(2)}</td>
-                <td className="py-2 px-2 text-right">
+                <td className="py-5 px-4 text-right text-value">{trade.qty}</td>
+                <td className="py-5 px-4 text-right text-value opacity-80">${trade.entry_price?.toFixed(2)}</td>
+                <td className="py-5 px-4 text-right text-value opacity-80">
                   {trade.exit_price ? `$${trade.exit_price.toFixed(2)}` : "—"}
                 </td>
-                <td className={`py-2 px-2 text-right font-semibold ${trade.pnl >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                <td className={`py-5 px-4 text-right text-value font-bold ${trade.pnl >= 0 ? "text-monroe-data-gain" : "text-monroe-data-loss"}`}>
                   {trade.pnl >= 0 ? "+" : ""}{trade.pnl?.toFixed(2)}
                 </td>
-                <td className="py-2 px-2">
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    trade.state === "open" ? "bg-blue-900 text-blue-200" : "bg-slate-700 text-slate-300"
+                <td className="py-5 px-4 text-center">
+                  <span className={`badge-default ${
+                    trade.state === "open" ? "badge-gold" : "opacity-40"
                   }`}>
                     {trade.state}
                   </span>

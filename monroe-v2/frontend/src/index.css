@@ -2,34 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-base: #0B0909;
+  --bg-surface: #171314;
+  --bg-raised: #231B18;
+  --gold-primary: #D6B56D;
+  --gold-mid: #B9964A;
+  --gold-muted: #8E6E33;
+  --accent-burg: #5C1F27;
+  --accent-ox: #4A1419;
+  --text-primary: #F3E7D3;
+  --text-secondary: #CDBB9B;
+  --border-default: rgba(214, 181, 109, 0.14);
+  --border-active: rgba(214, 181, 109, 0.30);
+  --gain: #8BC4A0;
+  --loss: #C48C8C;
+}
+
 body {
-  @apply bg-slate-900 text-slate-100;
+  @apply bg-monroe-base text-monroe-text-primary font-sans selection:bg-monroe-gold-mid selection:text-monroe-base;
+  background: 
+    radial-gradient(ellipse at 0% 50%, rgba(92, 31, 39, 0.28), transparent 55%),
+    radial-gradient(ellipse at 100% 50%, rgba(185, 150, 74, 0.16), transparent 55%),
+    linear-gradient(135deg, #130B0C 0%, #1A1312 35%, #0D0B0B 70%, #221813 100%);
+  background-attachment: fixed;
+  line-height: 1.65;
+}
+
+/* Typography Utilities */
+.text-display {
+  @apply font-serif uppercase tracking-display;
+}
+
+.text-ui-label {
+  @apply font-sans uppercase tracking-ui text-[10px];
+}
+
+.text-value {
+  @apply font-serif text-monroe-gold-primary;
 }
 
 .card {
-  @apply bg-slate-800 rounded-lg border border-slate-700 p-6 shadow-lg;
+  @apply bg-monroe-surface rounded-none border-[0.5px] border-monroe-gold-primary/10 p-6 transition-all duration-300 shadow-none;
+}
+
+.card:hover {
+  @apply border-monroe-gold-primary/30;
+}
+
+.divider {
+  @apply w-full;
+  background: linear-gradient(90deg, transparent, var(--gold-muted), transparent);
+  height: 0.5px;
 }
 
 .btn-primary {
-  @apply px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg font-semibold transition-colors;
+  @apply px-4 py-2 bg-monroe-gold-mid text-monroe-base rounded-none font-bold tracking-ui uppercase transition-all hover:bg-monroe-gold-primary;
 }
 
 .btn-secondary {
-  @apply px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-semibold transition-colors;
+  @apply px-4 py-2 bg-monroe-raised text-monroe-text-secondary rounded-none font-bold tracking-ui uppercase transition-colors border border-monroe-gold-primary/10 hover:border-monroe-gold-primary/30;
 }
 
-.status-badge {
-  @apply inline-block px-3 py-1 rounded-full text-sm font-semibold;
+.badge-default {
+  @apply inline-block px-3 py-1 bg-monroe-accent-burgundy text-monroe-text-secondary text-[10px] uppercase tracking-widest font-bold;
 }
 
+.badge-gold {
+  @apply inline-block px-3 py-1 bg-monroe-gold-primary/10 text-monroe-gold-primary border border-monroe-gold-mid/20 text-[10px] uppercase tracking-widest font-bold;
+}
+
+/* Data Status Badge mapping */
 .status-connected {
-  @apply bg-emerald-600 text-white;
+  @apply badge-gold;
 }
 
 .status-disconnected {
-  @apply bg-red-600 text-white;
+  @apply badge-default;
 }
 
-.status-loading {
-  @apply bg-slate-600 text-white;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-monroe-base;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-monroe-raised border border-monroe-base;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-monroe-gold-muted;
 }

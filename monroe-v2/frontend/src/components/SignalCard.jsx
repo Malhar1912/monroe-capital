@@ -2,102 +2,104 @@ export default function SignalCard({ signal, price, timestamp }) {
   const getPresenceColor = (presence) => {
     switch (presence) {
       case "Entering":
-        return "bg-emerald-600";
+        return "bg-monroe-gold-primary/10 text-monroe-gold-primary border-monroe-gold-mid/30";
       case "Watching":
-        return "bg-slate-600";
+        return "bg-monroe-raised text-monroe-text-secondary border-monroe-gold-muted/20";
       default:
-        return "bg-slate-700";
+        return "bg-monroe-base text-monroe-text-secondary/60 border-monroe-gold-muted/10";
     }
   };
 
   const getMoodColor = (mood) => {
     switch (mood) {
       case "Quiet Uptrend":
-        return "text-emerald-400";
+        return "text-monroe-data-gain";
       case "Neutral":
-        return "text-slate-400";
+        return "text-monroe-text-secondary";
       case "Guarded":
-        return "text-red-400";
+        return "text-monroe-data-loss";
       default:
-        return "text-slate-300";
+        return "text-monroe-text-secondary";
     }
   };
 
   const getActionColor = (action) => {
-    if (action === "Buy") return "text-emerald-400 font-bold";
-    return "text-slate-400";
+    if (action === "Buy") return "bg-monroe-gold-mid text-monroe-base border-monroe-gold-primary";
+    return "bg-monroe-accent-burgundy text-monroe-text-secondary border-monroe-accent-oxblood";
   };
 
   return (
-    <div className="card space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-100">Monroe Signal</h2>
-        <div className="text-sm text-slate-400">
+    <div className="card space-y-8 relative overflow-hidden">
+      <div className="flex justify-between items-center border-b border-monroe-gold-muted/10 pb-5">
+        <h2 className="text-display text-2xl text-monroe-gold-primary">Signal</h2>
+        <div className="text-ui-label text-monroe-text-secondary opacity-60">
           {timestamp ? new Date(timestamp).toLocaleTimeString() : "---"}
         </div>
       </div>
 
+      {/* Primary Action Banner */}
+      <div className={`p-6 border ${getActionColor(signal?.action)} flex flex-col items-center justify-center transition-all duration-700`}>
+        <span className="text-ui-label opacity-80 mb-2">Recommended Action</span>
+        <span className="text-display text-4xl font-bold">{signal?.action || "Hold"}</span>
+      </div>
+
+      <div className="divider"></div>
+
       {/* Price Display */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-700 rounded p-4">
-          <p className="text-slate-400 text-sm">Current Price</p>
-          <p className="text-2xl font-bold text-emerald-400">${price?.toFixed(2)}</p>
+        <div className="bg-monroe-base/40 p-4 border border-monroe-gold-muted/5">
+          <p className="text-ui-label text-monroe-text-secondary mb-2">Price</p>
+          <p className="text-value text-2xl">${price?.toFixed(2)}</p>
         </div>
-        <div className="bg-slate-700 rounded p-4">
-          <p className="text-slate-400 text-sm">Bid</p>
-          <p className="text-lg font-semibold text-slate-200">${signal?.bid?.toFixed(2)}</p>
+        <div className="bg-monroe-base/40 p-4 border border-monroe-gold-muted/5">
+          <p className="text-ui-label text-monroe-text-secondary mb-2">Bid</p>
+          <p className="text-value text-xl opacity-80">${signal?.bid?.toFixed(2)}</p>
         </div>
-        <div className="bg-slate-700 rounded p-4">
-          <p className="text-slate-400 text-sm">Ask</p>
-          <p className="text-lg font-semibold text-slate-200">${signal?.ask?.toFixed(2)}</p>
+        <div className="bg-monroe-base/40 p-4 border border-monroe-gold-muted/5">
+          <p className="text-ui-label text-monroe-text-secondary mb-2">Ask</p>
+          <p className="text-value text-xl opacity-80">${signal?.ask?.toFixed(2)}</p>
         </div>
       </div>
 
       {/* Monroe Metrics */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-slate-400 text-sm">Presence</span>
-            <span className={`status-badge ${getPresenceColor(signal?.presence)}`}>
-              {signal?.presence}
-            </span>
-          </div>
+      <div className="grid grid-cols-2 gap-6">
+        <div className="bg-monroe-base/20 p-5 border border-monroe-gold-muted/5">
+          <p className="text-ui-label text-monroe-text-secondary mb-4">Presence</p>
+          <span className={`badge-default border border-monroe-gold-muted/20 ${getPresenceColor(signal?.presence)}`}>
+            {signal?.presence || "---"}
+          </span>
         </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-slate-400 text-sm">Action</span>
-            <span className={`status-badge font-bold ${signal?.action === "Buy" ? "bg-emerald-600" : "bg-slate-600"}`}>
-              {signal?.action}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-slate-700 rounded p-4">
-          <p className="text-slate-400 text-sm mb-2">Mood</p>
-          <p className={`text-lg font-semibold ${getMoodColor(signal?.mood)}`}>
-            {signal?.mood}
-          </p>
-        </div>
-        <div className="bg-slate-700 rounded p-4">
-          <p className="text-slate-400 text-sm mb-2">Selectivity</p>
-          <p className="text-lg font-semibold text-slate-200">
-            {signal?.selectivity}
+        <div className="bg-monroe-base/20 p-5 border border-monroe-gold-muted/5">
+          <p className="text-ui-label text-monroe-text-secondary mb-3">Mood</p>
+          <p className={`text-value text-lg font-bold ${getMoodColor(signal?.mood)}`}>
+            {signal?.mood || "---"}
           </p>
         </div>
       </div>
 
-      <div className="bg-slate-700 rounded p-4">
-        <p className="text-slate-400 text-sm mb-2">Poise Level</p>
-        <div className="flex items-center gap-4">
-          <div className="flex-1 bg-slate-600 rounded-full h-3 overflow-hidden">
+      <div className="bg-monroe-base/20 p-5 border border-monroe-gold-muted/5">
+        <p className="text-ui-label text-monroe-text-secondary mb-3">Selectivity</p>
+        <p className="text-value text-xl tracking-widest font-bold">
+          {signal?.selectivity || "---"}
+        </p>
+      </div>
+
+      <div className="bg-monroe-raised p-6 border border-monroe-gold-muted/20">
+        <div className="flex justify-between items-end mb-4">
+          <p className="text-ui-label text-monroe-gold-primary font-bold">Poise Level</p>
+          <span className="text-value text-3xl">{signal?.poise || 0}<span className="text-lg opacity-40">/5</span></span>
+        </div>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map((level) => (
             <div 
-              className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full transition-all"
-              style={{ width: `${(signal?.poise || 0) * 20}%` }}
+              key={level}
+              className={`flex-1 h-1.5 transition-all duration-700 ${
+                (signal?.poise || 0) >= level 
+                  ? "bg-monroe-gold-mid shadow-[0_0_10px_#B9964A]" 
+                  : "bg-monroe-base border border-monroe-gold-muted/10"
+              }`}
             />
-          </div>
-          <span className="text-xl font-bold text-emerald-400">{signal?.poise}/5</span>
+          ))}
         </div>
       </div>
     </div>

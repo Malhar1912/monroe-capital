@@ -1,10 +1,11 @@
 import os
 import logging
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Query
+import traceback
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Query, Depends
 from sqlalchemy.orm import Session
 from .alpaca_client import latest_price, get_historical_data, get_symbol_info
 from .strategy import evaluate
-from .db import SessionLocal
+from .db import SessionLocal, get_db
 from .models import Trade
 import asyncio
 import json
@@ -109,11 +110,10 @@ def get_info(symbol: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/trades")
-def get_trades(db: Session = None, limit: int = 50):
+@router.get("/trades", response_model=None)
+def get_trades(db: Session = Depends(get_db), limit: int = 50):
     """Get recent trades from journal."""
     try:
-        db = db or SessionLocal()
         trades = db.query(Trade).order_by(Trade.created_at.desc()).limit(limit).all()
         return [
             {
@@ -164,11 +164,16 @@ async def websocket_endpoint(websocket: WebSocket, symbol: str):
                 await websocket.send_json(message)
                 
             except Exception as e:
-                logger.error(f"Error in WebSocket loop: {e}")
-                await websocket.send_json({
-                    "type": "error",
-                    "message": str(e)
-                })
+                logger.error(f"Error in WebSocket loop for {symbol}: {type(e).__name__}: {e}")
+                logger.debug(traceback.format_exc())
+                try:
+                    await websocket.send_json({
+                        "type": "error",
+                        "message": str(e)
+                    })
+                except Exception as send_error:
+                    logger.debug(f"Could not send error message (connection may be closed): {send_error}")
+                    break
             
             # Update interval - 5 seconds
             await asyncio.sleep(5)
@@ -177,7 +182,8 @@ async def websocket_endpoint(websocket: WebSocket, symbol: str):
         manager.disconnect(websocket, symbol)
         logger.info(f"WebSocket disconnected for {symbol}")
     except Exception as e:
-        logger.error(f"WebSocket error: {e}")
+        logger.error(f"WebSocket error for {symbol}: {type(e).__name__}: {e}")
+        logger.debug(traceback.format_exc())
         manager.disconnect(websocket, symbol)
 
 

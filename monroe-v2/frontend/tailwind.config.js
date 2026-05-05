@@ -6,24 +6,36 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        slate: {
-          900: "#0f172a",
-          800: "#1e293b",
-          700: "#334155",
-          600: "#475569",
-          400: "#94a3b8",
-          300: "#cbd5e1",
-          200: "#e2e8f0",
-          100: "#f1f5f9",
-        },
-        emerald: {
-          500: "#10b981",
-          600: "#059669",
-        },
-        red: {
-          500: "#ef4444",
-          600: "#dc2626",
-        },
+        monroe: {
+          base: "#0B0909",
+          surface: "#171314",
+          raised: "#231B18",
+          gold: {
+            primary: "#D6B56D",
+            mid: "#B9964A",
+            muted: "#8E6E33",
+          },
+          accent: {
+            burgundy: "#5C1F27",
+            oxblood: "#4A1419",
+          },
+          text: {
+            primary: "#F3E7D3",
+            secondary: "#CDBB9B",
+          },
+          data: {
+            gain: "#8BC4A0",
+            loss: "#C48C8C",
+          }
+        }
+      },
+      fontFamily: {
+        serif: ["Georgia", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
+      letterSpacing: {
+        display: "0.2em",
+        ui: "0.13em",
       },
     },
   },
