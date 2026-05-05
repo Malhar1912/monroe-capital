@@ -48,7 +48,7 @@ export default function Dashboard() {
   // WebSocket connection
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//localhost:8000/api/ws/${symbol}`;
+    const wsUrl = `${protocol}//monroe-capital.onrender.com/api/ws/${symbol}`;
 
     setLoading(true);
     setError(null);
